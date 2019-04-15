@@ -86,7 +86,7 @@ void LinkedList::InsertRow(int r)
 void LinkedList::InsertCol(int r,int c,int d)
 {
 	NodeRow *tmp=head;
-	while(1)
+	while(true)
 	{
 		if(tmp->get_row()==r)
 		{
@@ -148,7 +148,6 @@ void LinkedList::Delete()
 		head = temp;
 		free(tmp);
 	}
-	cout<<"it works!";
 }
 
 void LinkedList::fillTheArray(int r, int c){
@@ -250,11 +249,11 @@ LinkedList LinkedList::Add(LinkedList& l1, LinkedList& l2, int row, int col)
 	NodeRow *tmp2 = l2.head;
 	
 	for(int i=0;i<row;i++)
-	{
+	{ 	
 		if(tmp1!=NULL && tmp2!=NULL)
-		{
+		{	
 			if(tmp1->get_row()==tmp2->get_row())
-			{
+			{	
 				sum.InsertRow(tmp1->get_row());
 				NodeCol *ctmp1 = tmp1->start;
 				NodeCol *ctmp2 = tmp2->start;
@@ -267,40 +266,53 @@ LinkedList LinkedList::Add(LinkedList& l1, LinkedList& l2, int row, int col)
 							sum.InsertCol(tmp1->get_row(),ctmp1->get_column(),ctmp1->get_data()+ctmp2->get_data());
 							l1.Delete();
 							l2.Delete();
+							ctmp1=ctmp1->nextCol;
+							ctmp2=ctmp2->nextCol;
 						}
 						else if(ctmp1->get_column()<ctmp2->get_column())
 						{
 							sum.InsertCol(tmp1->get_row(),ctmp1->get_column(),ctmp1->get_data());
 							l1.Delete();
+							ctmp1=ctmp1->nextCol;
 						}
 						else if(ctmp2->get_column()<ctmp1->get_column())
 						{
 							sum.InsertCol(tmp2->get_row(),ctmp2->get_column(),ctmp2->get_data());
 							l2.Delete();
+							ctmp2=ctmp2->nextCol;
 						}
 					}
 					else if(ctmp1==NULL && ctmp2!=NULL)
 					{
 						sum.InsertCol(tmp2->get_row(),ctmp2->get_column(),ctmp2->get_data());
 						l2.Delete();
+						ctmp2=ctmp2->nextCol;
 					}
 					else if(ctmp2==NULL && ctmp1!=NULL)
 					{
 						sum.InsertCol(tmp1->get_row(),ctmp1->get_column(),ctmp1->get_data());
 						l1.Delete();
+						ctmp1=ctmp1->nextCol;
 
 					}
 				}
+				tmp1=tmp1->nextRow;
+				tmp2=tmp2->nextRow;
 			}
 			else if(tmp1->get_row()<tmp2->get_row())
 			{
+
 				sum.InsertRow(tmp1->get_row());
+				int temporary = tmp1->get_row();
 				NodeCol *ctmp = tmp1->start;
-				while(ctmp!=NULL)
+				while(tmp1->get_row() == temporary && ctmp!=NULL)
 				{
 					sum.InsertCol(tmp1->get_row(),ctmp->get_column(),ctmp->get_data());
 					l1.Delete();
+					ctmp=ctmp->nextCol;
 				}
+				tmp1=tmp1->nextRow;
+
 			}
 			else
 			{
@@ -310,7 +322,9 @@ LinkedList LinkedList::Add(LinkedList& l1, LinkedList& l2, int row, int col)
 				{
 					sum.InsertCol(tmp2->get_row(),ctmp->get_column(),ctmp->get_data());
 					l2.Delete();
+					ctmp=ctmp->nextCol;
 				}
+				tmp2=tmp2->nextRow;
 			}
 		}
 		else if(tmp1==NULL && tmp2!=NULL)
@@ -321,7 +335,9 @@ LinkedList LinkedList::Add(LinkedList& l1, LinkedList& l2, int row, int col)
 			{
 				sum.InsertCol(tmp2->get_row(),ctmp->get_column(),ctmp->get_data());
 				l2.Delete();
+				ctmp=ctmp->nextCol;
 			}
+			tmp2=tmp2->nextRow;
 		}
 		else if(tmp2==NULL && tmp1!=NULL)
 		{
@@ -331,7 +347,10 @@ LinkedList LinkedList::Add(LinkedList& l1, LinkedList& l2, int row, int col)
 			{
 				sum.InsertCol(tmp1->get_row(),ctmp->get_column(),ctmp->get_data());
 				l1.Delete();
+				ctmp=ctmp->nextCol;
 			}
+			tmp1=tmp1->nextRow;
+
 		}
 
 	}
@@ -347,11 +366,9 @@ int main()
 	cin >> row;
 	cin >> column;
 
-	LinkedList sth1; 
-	sth1=sth1.Insertion(row,column);
+	LinkedList sth1 = sth1.Insertion(row,column);
 	cout << "___________" << endl;
-	LinkedList sth2;
-	sth2 = sth2.Insertion(row,column);
+	LinkedList sth2 = sth2.Insertion(row,column);
 	cout << "___________" << endl;
 
 	sth1.Print();
@@ -359,7 +376,8 @@ int main()
 	sth2.Print();
 	cout << "___________" << endl;
 
-	LinkedList sth3=sth3.Add(sth1,sth2,row,column);
+	LinkedList sth3;
+	sth3 = sth3.Add(sth1,sth2,row,column);
 	sth3.Print();
 	cout << "___________" << endl;
 	sth3.fillTheArray(row,column);
